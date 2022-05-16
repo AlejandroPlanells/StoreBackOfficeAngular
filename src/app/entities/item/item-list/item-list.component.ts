@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Item } from '../model/item.model';
+import { ItemService } from '../service/item.service';
 
 @Component({
   selector: 'app-item-list',
@@ -10,16 +12,39 @@ export class ItemListComponent implements OnInit {
 
   categoryId?: number;
   title: string = "";
+  items: Item[] = [];
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(
+    private route: ActivatedRoute,
+    private itemService: ItemService) { }
 
   ngOnInit(): void {
     if(this.route.snapshot.paramMap.get("categoryId")) {
       this.categoryId = +this.route.snapshot.paramMap.get("categoryId")!;
       this.title ="Artículos de la categoría " + this.categoryId;
+      this.getAllItemsInCategory(this.categoryId);
     } else {
       this.title = "Lista de artículos";
+      this.getAllItems();
     }
+  }
+  
+  private getAllItems(): void {
+    this.itemService.getAllItems().subscribe({
+      next: (itemReq) => { this.items = itemReq; },
+      error: (err) => { this.hadleError(err); }
+    })
+  }
+
+  private getAllItemsInCategory(categoryId: number): void {
+    this.itemService.getAllItemsByCategoryId(categoryId).subscribe({
+      next: (itemReq) => { this.items = itemReq; },
+      error: (err) => { this.hadleError(err); }
+    })
+  }
+
+  private hadleError(err: any) {
+    // Toast mensaje para el cliente
   }
 
 }
