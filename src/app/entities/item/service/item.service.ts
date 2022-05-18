@@ -28,5 +28,15 @@ export class ItemService {
     let urlEndpoint: string = "http://localhost:8080/store/items/" + itemId;
     return this.http.get<Item>(urlEndpoint);
   }
+
+  public insert(item: Item): Observable<Item> {
+    let urlEndpoint: string = "http://localhost:8080/store/items";
+    return this.http.post<Item>(urlEndpoint, item);
+  }
+
+  public update(item: Item): Observable<Item> {
+    let urlEndpoint: string = "http://localhost:8080/store/items";
+    return this.http.patch<Item>(urlEndpoint, item);
+  }
   
 }

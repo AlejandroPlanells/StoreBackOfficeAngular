@@ -35,12 +35,12 @@
 
     <!-- Imagen -->
     <div class="form-group">
-        <label for="image">Imagen</label>
+        <label for="image">Imagen (base 64)</label>
         <input type="text" [(ngModel)]="item.image" name="image" class="form-control" id="image" #image="ngModel">
     </div>
 
     <div class="buttonsForm">
-        <button class="btn btn-primary">Guardar</button>
+        <button class="btn btn-primary" (click)="saveItem()">Guardar</button>
     </div>
 
 </form>
