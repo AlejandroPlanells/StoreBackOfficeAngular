@@ -15,13 +15,18 @@ export class ItemListComponent implements OnInit {
   items: Item[] = [];
 
   page: number = 0;
-  size: number = 1;
+  size: number = 25;
   sort: string = "name,asc";
 
   first: boolean = false;
   last: boolean = false;
   totalPages: number = 0;
   totalElements: number = 0;
+
+  nameFilter?: string;
+  priceFilter?: number;
+
+  itemIdToDelete?: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,25 +36,78 @@ export class ItemListComponent implements OnInit {
     if(this.route.snapshot.paramMap.get("categoryId")) {
       this.categoryId = +this.route.snapshot.paramMap.get("categoryId")!;
       this.title ="Artículos de la categoría " + this.categoryId;
-      this.getAllItemsInCategory(this.categoryId);
     } else {
       this.title = "Lista de artículos";
-      this.getAllItems();
     }
+
+    this.getAllItems();
+
   }
   
-  public previusPage():void {
+  public previusPage(): void {
     this.page -= 1;
     this.getAllItems();
   }
 
-  public nextPage():void {
+  public nextPage(): void {
     this.page += 1;
     this.getAllItems();
   }
 
+  public searchByFilters(): void {
+    this.getAllItems();
+  }
+
+  public prepareItemToDelete(itemId: number): void {
+    this.itemIdToDelete = itemId;
+  }
+
+  public deleteItem(): void {
+    if(this.itemIdToDelete) {
+      this.itemService.deleteItem(this.itemIdToDelete).subscribe({
+        next: (data) => {
+          this.getAllItems();
+        },
+        error: (err) => { this.hadleError(err)}
+      });
+    }
+    
+  }
+
+
+  private buildFilters(): string | undefined {
+    const filters: string[] = [];
+
+    if(this.categoryId){
+      filters.push("category.id:EQUAL:" + this.categoryId);
+    }
+
+    if(this.nameFilter) {
+      filters.push("name:MATCH:" + this.nameFilter);
+    }
+
+    if(this.priceFilter) {
+      filters.push("price:LESS_THAN_EQUAL:" + this.priceFilter);
+    }
+
+    if(filters.length > 0){
+      let globalFilters: string = "";
+      for(let filter of filters) {
+        globalFilters = globalFilters + filter + ","
+      }
+      globalFilters = globalFilters.substring(0, globalFilters.length-1);
+      return globalFilters;
+    } else {
+      return undefined;
+    }
+
+  }
+
   private getAllItems(): void {
-    this.itemService.getAllItems(this.page, this.size, this.sort).subscribe({
+
+    const filters: string | undefined = this.buildFilters();
+
+    this.itemService.getAllItems(this.page, this.size, this.sort, filters).subscribe({
       next: (data: any) => {
         this.items = data.content;
         this.first = data.first;
@@ -57,13 +115,6 @@ export class ItemListComponent implements OnInit {
         this.totalPages = data.totalPages;
         this.totalElements = data.totalElements; 
       },
-      error: (err) => { this.hadleError(err); }
-    })
-  }
-
-  private getAllItemsInCategory(categoryId: number): void {
-    this.itemService.getAllItemsByCategoryId(categoryId).subscribe({
-      next: (itemReq) => { this.items = itemReq; },
       error: (err) => { this.hadleError(err); }
     })
   }

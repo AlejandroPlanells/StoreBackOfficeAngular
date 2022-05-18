@@ -1,5 +1,25 @@
 <h1>{{title}}</h1>
 
+<form>
+    <div class="row">
+        <!-- Name -->
+        <div class="form-group col-12 col-md-6">
+            <label for="name">Nombre</label>
+            <input type="text" [(ngModel)]="nameFilter" name="name">
+        </div>
+
+        <!-- Price -->
+        <div class="form-group col-12 col-md-3">
+            <label for="price">Precio maximo</label>
+            <input type="text" [(ngModel)]="priceFilter" name="price">
+        </div>
+
+        <div class="col-12 col-md-3">
+            <button id="btnSearch" class="btn btn-secondary" (click)="searchByFilters()">Buscar</button>
+        </div>
+
+    </div>
+</form>
 
 <table *ngIf="items.length > 0">
     <thead>
@@ -19,7 +39,7 @@
             <td>{{item.price}}</td>
             <td>
                 <button id="btnEditItem">Editar</button>
-                <button id="btnDeleteItem">Eliminar</button>
+                <button id="btnDeleteItem" data-bs-toggle="modal" data-bs-target="#askConfirmationDelete" (click)="prepareItemToDelete(item.id!)">Eliminar</button>
             </td>
         </tr>
     </tbody>
@@ -30,3 +50,25 @@
     <span> Pagina {{(page+1)}} de {{totalPages}} - Elementos totales: {{totalElements}}</span>
     <button [disabled]="last" class="btn btn-secondary btnSiguiente" (click)="nextPage()">Siguiente</button>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="askConfirmationDelete" tabindex="-1" role="dialog" aria-labelledby="askConfirmationDelete" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Confirmación de borrado</h5>
+          <button type="button" class="btn close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            ¿Desea eliminar el registro seleccionado? Esta operacion no puede deshacerse.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary"  data-bs-dismiss="modal" (click)="deleteItem()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
