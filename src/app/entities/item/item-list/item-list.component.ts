@@ -14,6 +14,15 @@ export class ItemListComponent implements OnInit {
   title: string = "";
   items: Item[] = [];
 
+  page: number = 0;
+  size: number = 1;
+  sort: string = "name,asc";
+
+  first: boolean = false;
+  last: boolean = false;
+  totalPages: number = 0;
+  totalElements: number = 0;
+
   constructor(
     private route: ActivatedRoute,
     private itemService: ItemService) { }
@@ -29,9 +38,25 @@ export class ItemListComponent implements OnInit {
     }
   }
   
+  public previusPage():void {
+    this.page -= 1;
+    this.getAllItems();
+  }
+
+  public nextPage():void {
+    this.page += 1;
+    this.getAllItems();
+  }
+
   private getAllItems(): void {
-    this.itemService.getAllItems().subscribe({
-      next: (itemReq) => { this.items = itemReq; },
+    this.itemService.getAllItems(this.page, this.size, this.sort).subscribe({
+      next: (data: any) => {
+        this.items = data.content;
+        this.first = data.first;
+        this.last = data.last;
+        this.totalPages = data.totalPages;
+        this.totalElements = data.totalElements; 
+      },
       error: (err) => { this.hadleError(err); }
     })
   }

@@ -1,5 +1,6 @@
 <h1>{{title}}</h1>
 
+
 <table *ngIf="items.length > 0">
     <thead>
         <th>Id</th>
@@ -23,3 +24,9 @@
         </tr>
     </tbody>
 </table>
+
+<div class="botoneraPaginacion">
+    <button [disabled]="first" class="btn btn-secondary btnAtras" (click)="previusPage()">Anterior</button>
+    <span> Pagina {{(page+1)}} de {{totalPages}} - Elementos totales: {{totalElements}}</span>
+    <button [disabled]="last" class="btn btn-secondary btnSiguiente" (click)="nextPage()">Siguiente</button>
+</div>
