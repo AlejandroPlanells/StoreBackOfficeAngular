@@ -21,6 +21,10 @@
     </div>
 </form>
 
+<div id="buttonCreateContainer">
+    <button class="btn btn-primary" [routerLink]="['/items', 'new']">Nuevo Artículo</button>
+</div>
+
 <table *ngIf="items.length > 0">
     <thead>
         <th>Id</th>
@@ -38,7 +42,7 @@
             <td>{{item.name}}</td>
             <td>{{item.price}}</td>
             <td>
-                <button id="btnEditItem">Editar</button>
+                <button id="btnEditItem" [routerLink]="['/items', item.id]">Editar</button>
                 <button id="btnDeleteItem" data-bs-toggle="modal" data-bs-target="#askConfirmationDelete" (click)="prepareItemToDelete(item.id!)">Eliminar</button>
             </td>
         </tr>

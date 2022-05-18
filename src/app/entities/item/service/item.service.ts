@@ -9,7 +9,6 @@ import { Item } from '../model/item.model';
 })
 export class ItemService {
   
-
   constructor(private http: HttpClient) { }
 
   public getAllItems(page: number, size: number, sort: string, filters?: string): Observable<Item[]> {
@@ -23,6 +22,11 @@ export class ItemService {
   public deleteItem(itemIdToDelete: number): Observable<any> {
     let urlEndpoint: string = "http://localhost:8080/store/items/" + itemIdToDelete;
     return this.http.delete<any>(urlEndpoint);
+  }
+
+  public getItemById(itemId: number): Observable<Item> {
+    let urlEndpoint: string = "http://localhost:8080/store/items/" + itemId;
+    return this.http.get<Item>(urlEndpoint);
   }
   
 }
