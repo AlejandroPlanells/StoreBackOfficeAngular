@@ -59,7 +59,8 @@
     <!-- Imagen -->
     <div class="form-group">
         <label for="image">Imagen (base 64)</label>
-        <input type="text" [(ngModel)]="item.image" name="image" class="form-control" id="image" #image="ngModel">
+        <input type="file" id="image" class="form-control" (change)="includeImageInItem($event)">
+        <img *ngIf="item.image" [src]="'data:image/jpeg;base64,' + item.image">
     </div>
 
     <div class="buttonsForm">
